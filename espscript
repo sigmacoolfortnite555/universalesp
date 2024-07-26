@@ -1,0 +1,36 @@
+
+
+local Players = game:GetService("Players")
+
+
+local function highlightPlayer(player)
+    if player.Character then
+        local selectionBox = Instance.new("SelectionBox")
+        selectionBox.Adornee = player.Character
+        selectionBox.Color3 = Color3.new(1, 0, 0) -- Set color to red
+        selectionBox.Parent = player.Character
+    end
+end
+
+
+for _, player in ipairs(Players:GetPlayers()) do
+    highlightPlayer(player)
+end
+
+Players.PlayerAdded:Connect(highlightPlayer)
+
+Players.PlayerRemoving:Connect(function(player)
+    if player.Character then
+        for _, child in ipairs(player.Character:GetChildren()) do
+            if child:IsA("SelectionBox") then
+                child:Destroy()
+            end
+        end
+    end
+end)
+
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        highlightPlayer(player)
+    end)
+end)
